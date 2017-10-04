@@ -1,0 +1,42 @@
+/**
+ * Main custom CSS for project
+ */
+
+.loading {
+  text-align: center;
+  font-size: 2em;
+  padding: 1em;
+}
+
+.error {
+  color: #CC4C48;
+}
+
+.search-container {
+  padding: 1em 0;
+}
+
+.search-container label {
+  display: block;
+}
+
+.search-container input,
+.search-container button {
+  font-size: 1.5em;
+  display: inline-block;
+  padding: 0.5em 0.5em;
+  border: 1px solid #676767;
+  background-color: #FFFFFF;
+}
+
+.search-container button {
+  cursor: pointer;
+  background-color: #81CC48;
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  font-weight: bold;
+}
+
+.search-container button:hover {
+  background-color: #61BF1A;
+}

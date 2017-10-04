@@ -24,8 +24,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Styles -->
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css">
     <link rel="stylesheet" href="./styles/strib-styles.root.css" type="text/css">
-    <link rel="stylesheet" href="./styles/project.css" type="text/css">
+    <link rel="stylesheet" href="./styles/main.css" type="text/css">
 
     <!-- Social Media Tags -->
     <meta property="og:type" content="website">
@@ -97,20 +98,53 @@
     <!-- Footer -->
     <footer role="contentinfo">
       <div class="container-lg">
-        <p>Footer stuff</p>
+        <p>Some map data and address lookup &copy; 2017 Mapbox and its suppliers; all rights reserved.</p>
       </div>
     </footer>
 
     <!-- Main template -->
     <script type="template/ractive" id="template-app">
-      <div>
-        Hi
-      </div>
+      {{#if (datasets && datasets.length === neededDatasets)}}
+        <div class="search-container">
+          <form on-submit="searchAddress">
+            <label for="address-search">Search by address</label>
+            <input id="address-search" type="text" placeholder="123 Address Blvd, City, MN" value="{{ addressSearch }}">
+            <button on-click="searchAddress" type="submit" class="search-button">Search</button>
+
+            {{#if searchError }}
+              <div class="error">{{ searchError }}</div>
+            {{/if}}
+          </form>
+        </div>
+
+        <div class="candidates">
+          {{#if isSearching }}
+            <div class="loading">Searching...</div>
+          {{/if}}
+
+          {{#each candidates}}
+            <div class="candidate">
+              {{ Name }}
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="loading">Loading...</div>
+      {{/if}}
     </script>
 
 
     <!-- Scripts -->
+    <!--
+      "https://code.jquery.com/jquery-3.2.1.min.js",
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pym/1.3.1/pym.v1.min.js"></script>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <Script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.6/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/ractive@0.9.4/ractive.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js"></script>
+    <script src="./app/lib/wherewolf-master-20171004.js"></script>
     <script src="./app/main.js"></script>
   </body>
 </html>
