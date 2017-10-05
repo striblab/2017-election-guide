@@ -18,7 +18,8 @@
     template: document.getElementById('template-app').innerHTML,
     data: {
       neededDatasets: 4,
-      searchError: undefined
+      searchError: undefined,
+      contests: []
     }
   });
 
@@ -39,30 +40,68 @@
   // React to new coordinates
   r.observe('latitude', function(n) {
     if (n && this._app.where) {
-      var results = this._app.where.find({ lat: n, lng: this.get('longitude') });
+      var results = this._app.where.find({
+        lat: n,
+        lng: this.get('longitude')
+      });
+
+      console.log(results);
 
       // No results
       if (!results || !_.filter(results).length) {
         return this.set({
-          searchError: 'Unable to find any contests for this address, make sure it is in the Twin Cities.'
+          searchError:
+            'Unable to find any contests for this address, make sure it is in the Twin Cities.'
         });
       }
 
       // Filter candidates
-      this.set('candidates', _.filter(this._app.data.candidates, function(c) {
+      var candidates = _.filter(this._app.data.candidates, function(c) {
         if (results.stPaulCity && c.City === 'St. Paul') {
           return true;
         }
-        if ((results.mplsPark || results.mplsCouncil) && c.City === 'Minneapolis' && c.WardDistrict === 'All') {
+        if (
+          (results.mplsPark || results.mplsCouncil) &&
+          c.City === 'Minneapolis' &&
+          c.WardDistrict === 'All'
+        ) {
           return true;
         }
-        if (results.mplsPark && c.City === 'Minneapolis' && c.Race === 'Park Board' && c.WardDistrict.toString() === results.mplsPark.toString()) {
+        if (
+          results.mplsPark &&
+          c.City === 'Minneapolis' &&
+          c.Race === 'Park Board' &&
+          c.WardDistrict.toString() === results.mplsPark.id.toString()
+        ) {
           return true;
         }
-        if (results.mplsCouncil && c.City === 'Minneapolis' && c.Race === 'City Council' && c.WardDistrict.toString() === results.mplsPark.toString()) {
+        if (
+          results.mplsCouncil &&
+          c.City === 'Minneapolis' &&
+          c.Race === 'City Council' &&
+          c.WardDistrict.toString() === results.mplsCouncil.id.toString()
+        ) {
           return true;
         }
-      }));
+      });
+
+      // Group by contests
+      this.set(
+        'contests',
+        _.map(
+          _.groupBy(candidates, function(c) {
+            return [c.City, c.Race, c.WardDistrict].join('-');
+          }),
+          function(g) {
+            return {
+              City: g[0].City,
+              Race: g[0].Race,
+              WardDistrict: g[0].WardDistrict,
+              candidates: g
+            };
+          }
+        )
+      );
     }
   });
 
@@ -77,6 +116,7 @@
     }
 
     this.set({
+      contests: [],
       searchError: false,
       isSearching: true,
       longitude: undefined,
@@ -85,7 +125,7 @@
 
     geocode(
       this.get('addressSearch'),
-      _.bind(function(error, coordinates) {
+      _.bind(function(error, coordinates, place) {
         if (error) {
           this.set({
             searchError: error,
@@ -97,6 +137,7 @@
         this.set({
           searchError: false,
           isSearching: false,
+          addressSearch: place ? place : this.get('addressSearch'),
           longitude: coordinates[0],
           latitude: coordinates[1]
         });
@@ -157,7 +198,11 @@
           );
         }
 
-        done(null, response.results.features[0].center);
+        done(
+          null,
+          response.results.features[0].center,
+          response.results.features[0].place_name
+        );
       }
     );
   }

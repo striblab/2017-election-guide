@@ -117,14 +117,22 @@
           </form>
         </div>
 
-        <div class="candidates">
+        <div class="contests">
           {{#if isSearching }}
             <div class="loading">Searching...</div>
           {{/if}}
 
-          {{#each candidates}}
-            <div class="candidate">
-              {{ Name }}
+          {{#each contests}}
+            <div class="contest">
+              <h2>{{ City }} {{ Race }} {{ WardDistrict }}</h2>
+
+              <div class="candidates">
+                {{#each candidates}}
+                  <div class="candidate">
+                    {{ Name }}
+                  </div>
+                {{/each}}
+              </div>
             </div>
           {{/each}}
         </div>
