@@ -130,6 +130,9 @@
                 {{#each candidates}}
                   <div class="candidate">
                     {{ Name }}
+                    {{#if (Incumbent==="Y") }}
+                      <span class="incumbent">i</span>
+                    {{/if}}
                   </div>
                 {{/each}}
               </div>
