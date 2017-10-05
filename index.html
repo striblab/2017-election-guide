@@ -131,8 +131,29 @@
                   <div class="candidate">
                     {{ Name }}
                     {{#if (Incumbent==="Y") }}
-                      <span class="incumbent">i</span>
+                      <span class="incumbent">(i)</span>
                     {{/if}}
+
+                    <div class="website">
+                    {{#if Website}}
+                      <a href="{{Website}}" rel="noopener" target="_blank">Website</a>
+                    {{/if}}
+                    </div>
+
+                    <div class="finances">
+                    {{#if Finances}}
+                      <a href="{{Finances}}" rel="noopener" target="_blank">Latest campaign finance report</a>
+                    {{else}} 
+                      Report not available
+                    {{/if}}
+                    </div>
+
+                    <div class="story">
+                    {{#if StoryHed}}
+                      <a href="{{StoryURL}}" rel="noopener" target="_blank">{{StoryHed}}</a>
+                    {{/if}}
+                    </div>
+
                   </div>
                 {{/each}}
               </div>
