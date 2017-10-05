@@ -40,3 +40,19 @@
 .search-container button:hover {
   background-color: #61BF1A;
 }
+
+.candidate div{
+  width: 25%;
+  float: left;}
+
+.cf {
+  zoom: 1;}
+.cf:before, .cf:after{
+  content: ""; display: table;
+}
+.cf:after {
+  clear: both;}
+
+.incumbent{
+  color: #969696;
+}

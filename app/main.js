@@ -97,6 +97,7 @@
               City: g[0].City,
               Race: g[0].Race,
               WardDistrict: g[0].WardDistrict,
+              WardDistrictDisplay: g[0].WardDistrictDisplay,
               candidates: g
             };
           }

@@ -81,16 +81,8 @@
     <!-- Skip to main content -->
     <a href="#main-content" class="to-main-content">Skip to main content</a>
 
-    <!-- Header -->
-    <header class="project-header" role="banner">
-      <div class="container-lg">
-        <h1>Title here</h1>
-      </div>
-    </header>
-
     <!-- Main content here -->
     <main id="main-content" class="container-lg" role="main">
-      <p>Intro text here.</p>
 
       <div id="app-container"></div>
     </main>
@@ -128,21 +120,26 @@
 
               <div class="candidates">
                 {{#each candidates}}
-                  <div class="candidate">
+                  <div class="candidate cf">
+
+                    <div class="name">
                     {{ Name }}
                     {{#if (Incumbent==="Y") }}
                       <span class="incumbent">(i)</span>
                     {{/if}}
+                    </div>
 
                     <div class="website">
                     {{#if Website}}
                       <a href="{{Website}}" rel="noopener" target="_blank">Website</a>
+                    {{else}}
+                      <span>&nbsp;</span>
                     {{/if}}
                     </div>
 
                     <div class="finances">
                     {{#if Finances}}
-                      <a href="{{Finances}}" rel="noopener" target="_blank">Latest campaign finance report</a>
+                      <a href="{{Finances}}" rel="noopener" target="_blank">Latest finance report</a>
                     {{else}} 
                       Report not available
                     {{/if}}
@@ -150,7 +147,7 @@
 
                     <div class="story">
                     {{#if StoryHed}}
-                      <a href="{{StoryURL}}" rel="noopener" target="_blank">{{StoryHed}}</a>
+                      <a href="{{StoryURL}}" rel="noopener" target="_blank">Star Tribune story</a>
                     {{/if}}
                     </div>
 
