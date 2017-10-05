@@ -38,7 +38,7 @@
 }
 
 .search-container button:hover {
-  background-color: #61BF1A;
+  background-color: red;
 }
 
 .candidate div{
