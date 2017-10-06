@@ -115,42 +115,42 @@
           {{/if}}
 
           {{#each contests}}
-            <div class="contest">
+            <div class="contest cf">
               <h2>{{ City }} {{ Race }} {{ WardDistrictDisplay }}</h2>
+
+              <Map boundary="{{ boundary }}" />
 
               <div class="candidates">
                 {{#each candidates}}
                   <div class="candidate cf">
 
                     <div class="name">
-                    {{ Name }}
-                    {{#if (Incumbent==="Y") }}
-                      <span class="incumbent">(i)</span>
-                    {{/if}}
+                      {{#if StoryURL}}
+                        <a href="{{StoryURL}}" rel="noopener" target="_blank">{{ Name }}</a>
+                      {{else}}
+                        {{ Name }}
+                      {{/if}}
+
+                      {{#if (Incumbent==="Y") }}
+                        <span class="incumbent">(i)</span>
+                      {{/if}}
                     </div>
 
                     <div class="website">
-                    {{#if Website}}
-                      <a href="{{Website}}" rel="noopener" target="_blank">Website</a>
-                    {{else}}
-                      <span>&nbsp;</span>
-                    {{/if}}
+                      {{#if Website}}
+                        <a href="{{Website}}" rel="noopener" target="_blank">Website</a>
+                      {{else}}
+                        <span>&nbsp;</span>
+                      {{/if}}
                     </div>
 
                     <div class="finances">
-                    {{#if Finances}}
-                      <a href="{{Finances}}" rel="noopener" target="_blank">Latest finance report</a>
-                    {{else}} 
-                      Report not available
-                    {{/if}}
+                      {{#if Finances}}
+                        <a href="{{Finances}}" rel="noopener" target="_blank">Latest finance report</a>
+                      {{else}}
+                        Report not available
+                      {{/if}}
                     </div>
-
-                    <div class="story">
-                    {{#if StoryHed}}
-                      <a href="{{StoryURL}}" rel="noopener" target="_blank">Star Tribune story</a>
-                    {{/if}}
-                    </div>
-
                   </div>
                 {{/each}}
               </div>
@@ -160,6 +160,13 @@
       {{else}}
         <div class="loading">Loading...</div>
       {{/if}}
+    </script>
+
+    <!-- Main template -->
+    <script type="template/ractive" id="template-map">
+      <div class="map-container">
+        <div class="map" />
+      </div>
     </script>
 
 

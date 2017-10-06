@@ -18,8 +18,9 @@ Candidate information is managed in this [spreadsheet](https://docs.google.com/s
 For use int he browser and to optimize performance, the data files need to be converted:
 
 * Minneapolis city council districts: `ogr2ogr -f "GeoJSON" data/minneapolis-council.geo.json data/sources/Minneapolis-City_Council_Wards/City_Council_Wards.shp -t_srs "EPSG:4326" -sql "SELECT BDNUM AS id FROM City_Council_Wards"`
+* Minneapolis city boundarys: `ogr2ogr -f "GeoJSON" data/minneapolis-city.geo.json data/sources/Minneapolis-City_Council_Wards/City_Council_Wards.shp -t_srs "EPSG:4326" -dialect sqlite -sql "SELECT ST_Union(Geometry) FROM City_Council_Wards"`
 * Minneapolis park board districts: `ogr2ogr -f "GeoJSON" data/minneapolis-park.geo.json "data/sources/Minneapolis-park-board-districts/2017 Commissioner Districts-edited.shp" -t_srs "EPSG:4326" -sql "SELECT OBJECTID AS id FROM '2017 Commissioner Districts-edited'"`
-* St. Paul city boundary: `ogr2ogr -f "GeoJSON" data/st-paul-city.geo.json "data/sources/St-Paul-Council Ward - Shapefile - Map/st-paul-city-council.shp" -t_srs "EPSG:4326" -dialect pgsql -sql "SELECT ST_Union(Geometry) FROM 'st-paul-city-council'"`
+* St. Paul city boundary: `ogr2ogr -f "GeoJSON" data/st-paul-city.geo.json "data/sources/St-Paul-Council Ward - Shapefile - Map/st-paul-city-council.shp" -t_srs "EPSG:4326" -dialect sqlite -sql "SELECT ST_Union(Geometry) FROM 'st-paul-city-council'"`
     * Note: Had issue with `ogr2ogr` so this was manually done in QGIS.
 
 Easy command line option to get new data from the spread sheet.

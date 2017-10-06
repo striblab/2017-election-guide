@@ -16,8 +16,9 @@
   var r = Ractive({
     target: 'app-container',
     template: document.getElementById('template-app').innerHTML,
+    components: components(),
     data: {
-      neededDatasets: 4,
+      neededDatasets: 5,
       searchError: undefined,
       contests: []
     }
@@ -40,12 +41,22 @@
   // React to new coordinates
   r.observe('latitude', function(n) {
     if (n && this._app.where) {
-      var results = this._app.where.find({
-        lat: n,
-        lng: this.get('longitude')
-      });
+      var results = this._app.where.find(
+        {
+          lat: n,
+          lng: this.get('longitude')
+        },
+        { wholeFeature: true }
+      );
 
-      console.log(results);
+      // Pull id out
+      results = _.mapObject(results, function(r) {
+        if (r) {
+          r.id = r.properties.id;
+        }
+
+        return r;
+      });
 
       // No results
       if (!results || !_.filter(results).length) {
@@ -58,6 +69,7 @@
       // Filter candidates
       var candidates = _.filter(this._app.data.candidates, function(c) {
         if (results.stPaulCity && c.City === 'St. Paul') {
+          c.boundary = results.stPaulCity;
           return true;
         }
         if (
@@ -65,6 +77,7 @@
           c.City === 'Minneapolis' &&
           c.WardDistrict === 'All'
         ) {
+          c.boundary = r._app.data.mplsCity;
           return true;
         }
         if (
@@ -73,6 +86,7 @@
           c.Race === 'Park Board' &&
           c.WardDistrict.toString() === results.mplsPark.id.toString()
         ) {
+          c.boundary = results.mplsPark;
           return true;
         }
         if (
@@ -81,6 +95,7 @@
           c.Race === 'City Council' &&
           c.WardDistrict.toString() === results.mplsCouncil.id.toString()
         ) {
+          c.boundary = results.mplsCouncil;
           return true;
         }
       });
@@ -94,6 +109,7 @@
           }),
           function(g) {
             return {
+              boundary: g[0].boundary,
               City: g[0].City,
               Race: g[0].Race,
               WardDistrict: g[0].WardDistrict,
@@ -147,6 +163,13 @@
   });
 
   // Get data sets
+  getJSON('data/minneapolis-city.geo.json', function(error, data) {
+    if (error) {
+      r.set('appError', 'There was an error getting some of the data needed.');
+    }
+    r._app.data.mplsCity = data;
+    r.push('datasets', 'mplsCity');
+  });
   getJSON('data/minneapolis-park.geo.json', function(error, data) {
     if (error) {
       r.set('appError', 'There was an error getting some of the data needed.');
@@ -175,6 +198,55 @@
     r._app.data.candidates = data;
     r.push('datasets', 'candidates');
   });
+
+  // Make ractive components
+  function components() {
+    var Map = Ractive.extend({
+      template: document.getElementById('template-map').innerHTML,
+      oninit: function() {
+        this._app = this._app || {};
+
+        // Render
+        this.on('render', function() {
+          this._app.map = L.mapbox.map(this.find('.map'), 'mapbox.light', {
+            attributionControl: false,
+            zoomControl: this.get('zoomControl'),
+            scrollWheelZoom: this.get('scrollWheelZoom')
+          });
+
+          this.addBoundary(this.get('boundary'));
+        });
+
+        this.observe('boundary', this.addBoundary, { defer: true });
+
+        return {
+          zoomControl: false,
+          scrollWheelZoom: false
+        };
+      },
+
+      addBoundary: function(boundary) {
+        if (boundary && this._app.map) {
+          if (this._app.boundaryLayer) {
+            this._app.map.removeLayer(this._app.boundaryLayer);
+            this._app.boundaryLayer = null;
+          }
+
+          this._app.boundaryLayer = L.geoJson(boundary, {
+            style: function() {
+              return {};
+            }
+          }).addTo(this._app.map);
+
+          this._app.map.fitBounds(this._app.boundaryLayer.getBounds(), {
+            padding: [10, 10]
+          });
+        }
+      }
+    });
+
+    return { Map: Map };
+  }
 
   // Geocode address
   function geocode(address, done) {
