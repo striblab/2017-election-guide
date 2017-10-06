@@ -29,6 +29,10 @@
   background-color: #FFFFFF;
 }
 
+.search-container input {
+  width: 70%;
+}
+
 .search-container button {
   cursor: pointer;
   background-color: #81CC48;
@@ -41,18 +45,59 @@
   background-color: #61BF1A;
 }
 
-.candidate div{
-  width: 25%;
-  float: left;}
+.map {
+  width: 100%;
+  height: 18em;
+  margin-bottom: 1em;
+}
+
+.incumbent {
+  color: #969696;
+}
+
+.contest .map-container {
+  float: right;
+  width: 33.33333%;
+}
+
+.contest .candidates {
+  float: left;
+  width: 66.66663%;
+  padding-right: 0.5em;
+}
+
+.candidates .candidate {
+  padding: 0.25em;
+}
+
+.candidates .candidate:nth-child(even) {
+  background-color: #DEDEDE;
+}
+
+.candidate .name {
+  font-weight: bold;
+}
+
+.candidate > div {
+  width: 33.33332%;
+  float: left;
+  padding-right: 0.5em;
+}
+
+.strib footer {
+  font-size: .85em;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  background-color: inherit;
+  margin-top: 2rem;
+}
 
 .cf {
-  zoom: 1;}
-.cf:before, .cf:after{
+  zoom: 1;
+}
+.cf:before, .cf:after {
   content: ""; display: table;
 }
 .cf:after {
-  clear: both;}
-
-.incumbent{
-  color: #969696;
+  clear: both;
 }
