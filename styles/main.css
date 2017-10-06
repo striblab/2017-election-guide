@@ -71,7 +71,7 @@
 }
 
 .candidates .candidate:nth-child(even) {
-  background-color: #DEDEDE;
+  background-color: #ccc;
 }
 
 .candidate .name {
