@@ -25,6 +25,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css">
+    <link rel="stylesheet" href="http://m.startribune.com/assets/css/vendor/news/desktop-fonts.css">
     <link rel="stylesheet" href="./styles/strib-styles.root.css" type="text/css">
     <link rel="stylesheet" href="./styles/main.css" type="text/css">
 
@@ -100,8 +101,7 @@
         <div class="search-container">
           <form on-submit="searchAddress">
             <label for="address-search">Search by address</label>
-            <input id="address-search" type="text" placeholder="123 Address Blvd, City, MN" value="{{ addressSearch }}">
-            <button on-click="searchAddress" type="submit" class="search-button">Search</button>
+            <input id="address-search" type="text" placeholder="123 Address Blvd, City, MN" value="{{ addressSearch }}"><button on-click="searchAddress" type="submit" class="search-button">Search</button> <!-- leave input and button on one line! -->
 
             {{#if searchError }}
               <div class="error">{{ searchError }}</div>
