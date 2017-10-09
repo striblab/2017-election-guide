@@ -109,7 +109,7 @@
 
             {{#if mapInput.boundaries}}
               <div class="map-input">
-                <Map boundary="{{ mapInput.boundaries }}" latitude="{{ latitude }}" longitude="{{ longitude }}" />
+                <Map boundary="{{ mapInput.boundaries }}" latitude="{{ latitude }}" longitude="{{ longitude }}" input="true" zoomControl="true" updatingLocation="{{ updatingLocation }}" />
               </div>
             {{/if}}
           </form>

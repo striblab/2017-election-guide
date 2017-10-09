@@ -30,10 +30,13 @@
     interactive: false
   };
   var defaultLocationStyles = {
-    stroke: false,
+    stroke: true,
+    color: '#cc8e48',
+    weight: 1,
+    opacity: 0.1,
     fill: true,
     fillColor: '#cc8e48',
-    fillOpacity: 0.9,
+    fillOpacity: 1,
     interactive: false,
     radius: 5
   };
@@ -154,6 +157,16 @@
     }
   });
 
+  // When someone picks a point on the map, this gets marked true
+  r.observe('updatingLocation', function(n) {
+    if (n && n === true) {
+      this.set({
+        addressSearch: '',
+        updatingLocation: false
+      });
+    }
+  });
+
   // Address search
   r.on('searchAddress', function(context) {
     if (context && _.isObject(context.event)) {
@@ -252,6 +265,11 @@
 
           // Location
           this.addLocation();
+
+          // Enable input
+          if (this.get('input')) {
+            this.addInput();
+          }
         });
 
         // Handle changes to boundary
@@ -266,13 +284,33 @@
         };
       },
 
+      addInput: function() {
+        var thisComponent = this;
+        if (this._app.map) {
+          this._app.map.on('click', function(e) {
+            if (e && e.latlng) {
+              thisComponent.set({
+                updatingLocation: true,
+                latitude: e.latlng.lat,
+                longitude: e.latlng.lng
+              });
+            }
+          });
+        }
+      },
+
       addLocation: function() {
         var location = {
           latitude: this.get('latitude'),
           longitude: this.get('longitude')
         };
 
-        if (location && location.latitude && location.longitude && this._app.map) {
+        if (
+          location &&
+          location.latitude &&
+          location.longitude &&
+          this._app.map
+        ) {
           if (this._app.locationLayer) {
             this._app.map.removeLayer(this._app.locationLayer);
             this._app.locationLayer = null;
@@ -282,6 +320,10 @@
             [location.latitude, location.longitude],
             defaultLocationStyles
           ).addTo(this._app.map);
+
+          if (this.get('input')) {
+            this._app.map.setView([location.latitude, location.longitude], 15);
+          }
         }
       },
 
