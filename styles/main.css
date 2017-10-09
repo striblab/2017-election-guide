@@ -41,8 +41,14 @@
     width: 19%;
     text-transform: uppercase;
 }
+
 .search-container button:hover {
     background-color: #61BF1A;
+}
+
+.search-button .fa {
+  font-size: 0.75em;
+  display: none;
 }
 
 .search-container .error {
@@ -59,55 +65,70 @@
     height: 18em;
     margin-bottom: 1em;
 }
+
 .incumbent {
     color: #969696;
 }
+
 .contest {
     margin-top: 48px;
 }
+
 .contest .map-container {
     float: right;
     width: 28.33333%;
 }
+
 .contest .candidates {
     float: left;
     width: 66%;
 }
+
 .candidates a {
     text-decoration: none;
 }
+
 .candidates a:hover {
     text-decoration: underline;
 }
-.website {
-    width: 23.33332% !important;
-}
-.name {
-    width: 43.33332% !important;
-}
-.name,
-.website {
-    border-right: solid #fff 2px;
-    padding: 9px 12px;
-}
-.website,
-.finances {
-    text-align: center;
-}
-.finances {
-    padding: 9px 12px;
-}
-.candidates .candidate:nth-child(odd) {
-    background-color: #E9E9E9;
-}
-.candidate .name {
-    font-weight: bold;
-}
+
 .candidate > div {
     width: 33.33332%;
     float: left;
     padding-right: 0.5em;
 }
+
+.candidate .website {
+    width: 23.33332%;
+}
+
+.candidate .name {
+    width: 43.33332%;
+}
+
+.candidate .name,
+.candidate .website {
+    border-right: solid #fff 2px;
+    padding: 9px 12px;
+}
+
+.candidate .website,
+.candidate .finances {
+    text-align: center;
+}
+
+.candidate .finances {
+    padding: 9px 12px;
+}
+
+.candidates .candidate:nth-child(odd) {
+    background-color: #E9E9E9;
+}
+
+.candidate .name {
+    font-weight: bold;
+}
+
 .strib footer {
     font-size: .85em;
     padding: 0;
@@ -128,4 +149,38 @@
 }
 .cf:after {
     clear: both;
+}
+
+@media screen and (max-width: 800px) {
+  .candidate .name {
+    width: 100%;
+    padding-bottom: 0;
+    border-right: none;
+  }
+
+  .candidate .website,
+  .candidate .finances {
+    padding-top: 0;
+    width: 50%;
+    text-align: left;
+    border-right: none;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .contest .candidates {
+    width: 100%;
+  }
+
+  .contest .map-container {
+    display: none;
+  }
+
+  .search-button .button-text {
+    display: none;
+  }
+
+  .search-button .fa {
+    display: inline;
+  }
 }
