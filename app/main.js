@@ -3,14 +3,43 @@
  */
 
 // Implicit dependencies
-/* global Ractive, _, Papa, L, Wherewolf */
+/* global Ractive, _, Papa, L, Wherewolf, pym */
 
 // Wrap logic, so we don't clobber anything else
 (function() {
+  // Setup Pym if available
+  let localPym;
+  if (pym) {
+    localPym = new pym.Child({ polling: 500 });
+  }
+
   // Setup mapbox access
   L.mapbox.accessToken =
     'pk.eyJ1Ijoic2hhZG93ZmxhcmUiLCJhIjoiS3pwY1JTMCJ9.pTSXx_LFgR3XBpCNNxWPKA';
   var geocoder = L.mapbox.geocoder('mapbox.places');
+
+  // Default styling for map boundaries
+  var defaultBoundaryStyles = {
+    stroke: true,
+    color: '#48bdcc',
+    weight: 2,
+    opacity: 0.9,
+    fill: true,
+    fillColor: '#48bdcc',
+    fillOpacity: 0.15,
+    interactive: false
+  };
+  var defaultLocationStyles = {
+    stroke: true,
+    color: '#cc8e48',
+    weight: 1,
+    opacity: 0.1,
+    fill: true,
+    fillColor: '#cc8e48',
+    fillOpacity: 1,
+    interactive: false,
+    radius: 5
+  };
 
   // Create main ractive app
   var r = Ractive({
@@ -18,6 +47,7 @@
     template: document.getElementById('template-app').innerHTML,
     components: components(),
     data: {
+      canGeolocate: window.navigator && 'geolocation' in window.navigator,
       neededDatasets: 5,
       searchError: undefined,
       contests: []
@@ -35,6 +65,12 @@
       this._app.where.add('mplsCouncil', this._app.data.mplsCouncil);
       this._app.where.add('mplsPark', this._app.data.mplsPark);
       this._app.where.add('stPaulCity', this._app.data.stPaulCity);
+
+      // Add boundaries for selection map
+      this.set('mapInput.boundaries', [
+        this._app.data.mplsCouncil,
+        this._app.data.stPaulCity
+      ]);
     }
   });
 
@@ -120,6 +156,34 @@
         )
       );
     }
+  });
+
+  // When someone picks a point on the map, this gets marked true
+  r.observe('updatingLocation', function(n) {
+    if (n && n === true) {
+      this.set({
+        addressSearch: '',
+        updatingLocation: false
+      });
+    }
+  });
+
+  // Basic geolocation function
+  r.on('geolocate', function(context) {
+    if (context && _.isObject(context.event)) {
+      context.event.preventDefault();
+    }
+    var thisComponent = this;
+    this.set('isSearching', true);
+
+    window.navigator.geolocation.getCurrentPosition(function(position) {
+      thisComponent.set({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        updatingLocation: true,
+        isSearching: false
+      });
+    });
   });
 
   // Address search
@@ -208,16 +272,30 @@
 
         // Render
         this.on('render', function() {
+          // Make map
           this._app.map = L.mapbox.map(this.find('.map'), 'mapbox.light', {
             attributionControl: false,
             zoomControl: this.get('zoomControl'),
             scrollWheelZoom: this.get('scrollWheelZoom')
           });
 
+          // Load boundary initally
           this.addBoundary(this.get('boundary'));
+
+          // Location
+          this.addLocation();
+
+          // Enable input
+          if (this.get('input')) {
+            this.addInput();
+          }
         });
 
+        // Handle changes to boundary
         this.observe('boundary', this.addBoundary, { defer: true });
+
+        // Handle changes to location
+        this.observe('latitude', this.addLocation, { defer: true });
 
         return {
           zoomControl: false,
@@ -225,19 +303,68 @@
         };
       },
 
+      addInput: function() {
+        var thisComponent = this;
+        if (this._app.map) {
+          this._app.map.on('click', function(e) {
+            if (e && e.latlng) {
+              thisComponent.set({
+                updatingLocation: true,
+                latitude: e.latlng.lat,
+                longitude: e.latlng.lng
+              });
+            }
+          });
+        }
+      },
+
+      addLocation: function() {
+        var location = {
+          latitude: this.get('latitude'),
+          longitude: this.get('longitude')
+        };
+
+        if (
+          location &&
+          location.latitude &&
+          location.longitude &&
+          this._app.map
+        ) {
+          if (this._app.locationLayer) {
+            this._app.map.removeLayer(this._app.locationLayer);
+            this._app.locationLayer = null;
+          }
+
+          this._app.locationLayer = L.circleMarker(
+            [location.latitude, location.longitude],
+            defaultLocationStyles
+          ).addTo(this._app.map);
+
+          if (this.get('input')) {
+            this._app.map.setView([location.latitude, location.longitude], 15);
+          }
+        }
+      },
+
       addBoundary: function(boundary) {
+        let thisComponent = this;
+
         if (boundary && this._app.map) {
           if (this._app.boundaryLayer) {
             this._app.map.removeLayer(this._app.boundaryLayer);
             this._app.boundaryLayer = null;
           }
 
-          this._app.boundaryLayer = L.geoJson(boundary, {
-            style: function() {
-              return {};
-            }
-          }).addTo(this._app.map);
+          this._app.boundaryLayer = L.featureGroup();
+          _.each(_.isArray(boundary) ? boundary : [boundary], function(b) {
+            L.geoJson(b, {
+              style: function() {
+                return defaultBoundaryStyles;
+              }
+            }).addTo(thisComponent._app.boundaryLayer);
+          });
 
+          this._app.boundaryLayer.addTo(this._app.map);
           this._app.map.fitBounds(this._app.boundaryLayer.getBounds(), {
             padding: [10, 10]
           });

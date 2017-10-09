@@ -24,8 +24,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css">
     <link rel="stylesheet" href="http://m.startribune.com/assets/css/vendor/news/desktop-fonts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css">
     <link rel="stylesheet" href="./styles/strib-styles.root.css" type="text/css">
     <link rel="stylesheet" href="./styles/main.css" type="text/css">
 
@@ -91,7 +92,7 @@
     <!-- Footer -->
     <footer role="contentinfo">
       <div class="container-lg">
-        <p>Some map data and address lookup &copy; 2017 Mapbox and its suppliers; all rights reserved.</p>
+        <p>For your full and official ballot, please refer to the <a href="http://myballotmn.sos.state.mn.us/" target="_blank" rel="noopener">Minnesota Secretary of State</a>.  Some map data and address lookup &copy; 2017 Mapbox and its suppliers.</p>
       </div>
     </footer>
 
@@ -100,11 +101,24 @@
       {{#if (datasets && datasets.length === neededDatasets)}}
         <div class="search-container">
           <form on-submit="searchAddress">
-            <label for="address-search">Search by address</label>
-            <input id="address-search" type="text" placeholder="123 Address Blvd, City, MN" value="{{ addressSearch }}"><button on-click="searchAddress" type="submit" class="search-button">Search</button> <!-- leave input and button on one line! -->
+            <label for="address-search">
+              {{#if canGeolocate }}
+                Input your address, choose a point on the map, or use your <a on-click="geolocate" href="#"><i class="fa fa-location-arrow"></i> current location</a>
+              {{else}}
+                Input your address or choose a point on the map
+              {{/if}}
+            </label>
+            <input id="address-search" type="text" placeholder="123 Address Blvd, City, MN" value="{{ addressSearch }}"><button on-click="searchAddress" type="submit" class="search-button" title="Search by address"><i class="fa fa-search"></i><span class="button-text">Search</span></button>
+            <!-- leave input and button on one line! -->
 
             {{#if searchError }}
               <div class="error">{{ searchError }}</div>
+            {{/if}}
+
+            {{#if mapInput.boundaries}}
+              <div class="map-input">
+                <Map boundary="{{ mapInput.boundaries }}" latitude="{{ latitude }}" longitude="{{ longitude }}" input="true" zoomControl="true" updatingLocation="{{ updatingLocation }}" />
+              </div>
             {{/if}}
           </form>
         </div>
@@ -118,7 +132,7 @@
             <div class="contest cf">
               <h2>{{ City }} {{ Race }} {{ WardDistrictDisplay }}</h2>
 
-              <Map boundary="{{ boundary }}" />
+              <Map boundary="{{ boundary }}" latitude="{{ latitude }}" longitude="{{ longitude }}" />
 
               <div class="candidates">
                 {{#each candidates}}
