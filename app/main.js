@@ -47,6 +47,7 @@
     template: document.getElementById('template-app').innerHTML,
     components: components(),
     data: {
+      canGeolocate: window.navigator && 'geolocation' in window.navigator,
       neededDatasets: 5,
       searchError: undefined,
       contests: []
@@ -165,6 +166,24 @@
         updatingLocation: false
       });
     }
+  });
+
+  // Basic geolocation function
+  r.on('geolocate', function(context) {
+    if (context && _.isObject(context.event)) {
+      context.event.preventDefault();
+    }
+    var thisComponent = this;
+    this.set('isSearching', true);
+
+    window.navigator.geolocation.getCurrentPosition(function(position) {
+      thisComponent.set({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        updatingLocation: true,
+        isSearching: false
+      });
+    });
   });
 
   // Address search
