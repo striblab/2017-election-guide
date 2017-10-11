@@ -98,7 +98,7 @@
       if (!results || !_.filter(results).length) {
         return this.set({
           searchError:
-            'Unable to find any contests for this address, make sure it is in the Twin Cities.'
+            'Unable to find any contests for this address, make sure it is in Minneapolis or St. Paul.'
         });
       }
 
@@ -150,6 +150,7 @@
               Race: g[0].Race,
               WardDistrict: g[0].WardDistrict,
               WardDistrictDisplay: g[0].WardDistrictDisplay,
+              ElectNum: g[0].ElectNum,
               candidates: g
             };
           }

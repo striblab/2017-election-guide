@@ -92,7 +92,7 @@
     <!-- Footer -->
     <footer role="contentinfo">
       <div class="container-lg">
-        <p>For your full and official ballot, please refer to the <a href="http://myballotmn.sos.state.mn.us/" target="_blank" rel="noopener">Minnesota Secretary of State</a>.  Some map data and address lookup &copy; 2017 Mapbox and its suppliers.</p>
+        <p>For your full and official ballot, and to find your polling place, please refer to the <a href="http://myballotmn.sos.state.mn.us/" target="_blank" rel="noopener">Minnesota Secretary of State</a>.  Some map data and address lookup &copy; 2017 Mapbox and its suppliers.</p>
       </div>
     </footer>
 
@@ -130,7 +130,7 @@
 
           {{#each contests}}
             <div class="contest cf">
-              <h2>{{ City }} {{ Race }} {{ WardDistrictDisplay }}</h2>
+              <h2>{{ City }} {{ Race }} {{ WardDistrictDisplay }} <span>{{ElectNum}}</span></h2>
 
               <Map boundary="{{ boundary }}" latitude="{{ latitude }}" longitude="{{ longitude }}" />
 
@@ -146,7 +146,7 @@
                       {{/if}}
 
                       {{#if (Incumbent==="Y") }}
-                        <span class="incumbent">(i)</span>
+                        <span class="incumbent">incumbent</span>
                       {{/if}}
                     </div>
 
