@@ -64,7 +64,7 @@ This project is a static HTML page, so serve it locally with your preferred web 
 
 This project should be published to: `static.startribune.com/projects/2017-election-guide`
 
-With AWS command line: `aws s3 sync ./ s3://static.startribune.com/projects/2017-election-guide --exclude="*" --include="*.html" --include="assets/*" --include="styles/*" --include="app/*" --include="data/*.json"`
+With AWS command line: `aws s3 sync ./ s3://static.startribune.com/projects/2017-election-guide --exclude="*" --include="*.html" --include="assets/*" --include="styles/*" --include="app/*" --include="data/*.json" --include="data/*.csv" --acl="public-read" --cache-control="public, max-age=60"`
 
 ## License
 

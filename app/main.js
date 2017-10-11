@@ -98,7 +98,9 @@
       if (!results || !_.filter(results).length) {
         return this.set({
           searchError:
-            'Unable to find any contests for this address, make sure it is in Minneapolis or St. Paul.'
+            'Unable to find any contests for this address, make sure it is in Minneapolis or St. Paul.',
+          isSearching: false,
+          contests: []
         });
       }
 
@@ -137,6 +139,7 @@
       });
 
       // Group by contests
+      this.set('searchError', false);
       this.set(
         'contests',
         _.map(
@@ -175,13 +178,21 @@
       context.event.preventDefault();
     }
     var thisComponent = this;
-    this.set('isSearching', true);
+    this.set({
+      isSearching: true,
+      contests: []
+    });
 
     window.navigator.geolocation.getCurrentPosition(function(position) {
       thisComponent.set({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         updatingLocation: true,
+        isSearching: false
+      });
+    }, function() {
+      thisComponent.set({
+        searchError: 'There was an issue finding your location, trying using the address search.',
         isSearching: false
       });
     });
