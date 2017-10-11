@@ -68,10 +68,18 @@
 
 .incumbent {
     color: #969696;
+    font-weight: normal;
+    font-size: .85em;
 }
 
 .contest {
     margin-top: 48px;
+}
+
+.contest h2 span{
+    color: #969696;
+    font-weight: normal;
+    font-size: .8em;
 }
 
 .contest .map-container {
