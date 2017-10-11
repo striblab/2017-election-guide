@@ -34,18 +34,36 @@ This project is best used as an embed.  The best way to embed the piece is with 
 
 ```html
 <div id="2017-election-guide-embed" class="size-l">Loading...</div>
-<script type="text/javascript">
-  (function(){ window.pym = undefined; })();
-</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pym/1.3.1/pym.v1.min.js" type="text/javascript"></script>
-
-<script type="text/javascript">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pym/1.3.1/pym.v1.min.js" type="text/javascript">
+</script> <script type="text/javascript">
   (function(){
     var pymParent = new pym.Parent(
       "2017-election-guide-embed",
       "http://static.startribune.com/projects/2017-election-guide/index.html"
     );
+  })();
+</script>
+```
+
+Unsure why, but this hackery is needed for the Star Tribune CMS.
+
+```html
+<div id="2017-election-guide-embed" class="size-l">Loading...</div>
+
+<script type="text/javascript">
+  (function(){
+    window.pym = undefined;
+
+    var el = document.createElement('script');
+    el.src = 'https://cdnjs.cloudflare.com/ajax/libs/pym/1.3.1/pym.v1.min.js';
+    document.getElementsByTagName('head')[0].appendChild(el);
+
+    setTimeout(function() {
+      var pymParent = new window.pym.Parent(
+        "2017-election-guide-embed",
+        "http://static.startribune.com/projects/2017-election-guide/index.html"
+      );
+    }, 1000);
   })();
 </script>
 ```
